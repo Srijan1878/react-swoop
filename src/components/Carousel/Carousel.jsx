@@ -45,7 +45,7 @@ export const Carousel = ({ children, config = {}, ...props }) => {
   useEffect(() => {
     let intervalId
 
-    const intevalValue = interval !== undefined ? 2000 : interval
+    const intevalValue = interval
 
     if (auto) {
       setInterval(changeImage(1), intevalValue)
