@@ -32,13 +32,12 @@ const { animationTypes } = animationConfig
 
 export const Carousel = ({ children, config = {}, ...props }) => {
   const configOptions = generateConfig(config)
-  console.log(configOptions)
   const { loop, showTabs, auto, interval, animationType, speed } = configOptions
-  const [activeImage, setActiveImage] = useState(props.activeImage || 0)
+  const [active, setActive] = useState(props.active || 0)
 
   const changeImage = (direction = 1) => {
     return () => {
-      setActiveImage((prevImage) => prevImage + direction)
+      setActive((prev) => prev + direction)
     }
   }
 
@@ -62,8 +61,8 @@ export const Carousel = ({ children, config = {}, ...props }) => {
           index,
           animationType,
           speed,
-          activeImage,
-          setActiveImage
+          active,
+          setActive
         })
       case false:
         return (
@@ -71,8 +70,8 @@ export const Carousel = ({ children, config = {}, ...props }) => {
             index={index}
             animationType={animationType}
             speed={speed}
-            activeImage={activeImage}
-            setActiveImage={setActiveImage}
+            active={active}
+            setActive={setActive}
           >
             {child}
           </Carousel.Content>
@@ -86,29 +85,29 @@ export const Carousel = ({ children, config = {}, ...props }) => {
       <Button
         next
         onClick={changeImage(1)}
-        disabled={!loop && activeImage === children.length - 1}
+        disabled={!loop && active === children.length - 1}
       />
       <Button
         onClick={changeImage(-1)}
-        disabled={!loop && !activeImage}
+        disabled={!loop && !active}
         tabs={children}
       />
       {showTabs && (
         <CarouselTabs
           tabs={childrenWithProps}
-          activeIndex={activeImage}
-          setActiveIndex={setActiveImage}
+          activeIndex={active}
+          setActiveIndex={setActive}
         />
       )}
     </CarouselWrapper>
   )
 }
 
-Carousel.Content = ({ index, children, activeImage, animationType, speed }) => {
+Carousel.Content = ({ index, children, active, animationType, speed }) => {
   return (
     <CarouselContentWrapper
       speed={speed}
-      style={getStyles({ index, activeImage, animationType })}
+      style={getStyles({ index, active, animationType })}
     >
       {children}
     </CarouselContentWrapper>

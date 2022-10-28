@@ -2,8 +2,8 @@ import animationConfig from '../config/animationConfig'
 
 const { animationStyles } = animationConfig
 
-const getStyles = ({ index, activeImage, animationType = 'slide', speed }) => {
-  const direction = index - activeImage
+const getStyles = ({ index, active, animationType }) => {
+  const direction = index - active
   return animationStyles[animationType](direction)
 }
 

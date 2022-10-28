@@ -1,13 +1,13 @@
 {
   "name": "react-swoop",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "description": "A package that makes building beautiful carousels incredibly easy.",
   "author":{ 
     "name": "Srijan1878" ,
     "email": "srijansilnit@gmail.com"
   },
   "license": "MIT",
-  "repository": "Srijan1878/react-image-whirler",
+  "repository": "Srijan1878/react-swoop",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",

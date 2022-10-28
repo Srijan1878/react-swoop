@@ -26,7 +26,7 @@ const App = () => {
   }
 
   return (
-    <Carousel config={config}>
+    <Carousel config={config} active={1}>
       <Carousel.Content>
         <img src={'http://placekitten.com/200/300'} />
       </Carousel.Content>
@@ -54,7 +54,7 @@ const App = () => {
   }
 
   return (
-    <Carousel config={config}>
+    <Carousel config={config} active={1}>
       <div>
         <img src={'http://placekitten.com/200/300'} />
       </div>
@@ -65,6 +65,13 @@ const App = () => {
   )
 }
 ```
+
+  <h3>The Carousel Component takes in two parameters, active and config</h3>
+  <ul>
+  <li> active: String, It denotes the index of the active slide. </li>
+ 
+<li>
+<p>The config prop is an object and can have multiple fields that will determine the behavior of the Carousel, Detailed description of the props is given below</p>
   <table>
     <thead>
       <th>Prop Name</th>
@@ -99,7 +106,8 @@ const App = () => {
     </tr>
     </tbody>
   </table>
-
+  </li>
+ </ul>
 ## License
 
 MIT © [Srijan1878](https://github.com/Srijan1878)
