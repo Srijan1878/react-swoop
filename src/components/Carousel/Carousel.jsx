@@ -9,6 +9,7 @@ import CarouselTabs from '../CarouselTabs/CarouselTabs'
 // import getIndex from '../../utils/getIndex'
 import getStyles from '../../utils/getStyles'
 import animationConfig from '../../config/animationConfig'
+import generateConfig from '../../utils/generateConfig'
 
 const { animationTypes } = animationConfig
 /**
@@ -29,8 +30,10 @@ const { animationTypes } = animationConfig
  * )
  */
 
-export const Carousel = ({ children, config, ...props }) => {
-  const { loop, showTabs, auto, interval, animationType, speed } = config
+export const Carousel = ({ children, config = {}, ...props }) => {
+  const configOptions = generateConfig(config)
+  console.log(configOptions)
+  const { loop, showTabs, auto, interval, animationType, speed } = configOptions
   const [activeImage, setActiveImage] = useState(props.activeImage || 0)
 
   const changeImage = (direction = 1) => {
@@ -101,13 +104,7 @@ export const Carousel = ({ children, config, ...props }) => {
   )
 }
 
-Carousel.Content = ({
-  index,
-  children,
-  activeImage,
-  animationType,
-  speed = 0.5
-}) => {
+Carousel.Content = ({ index, children, activeImage, animationType, speed }) => {
   return (
     <CarouselContentWrapper
       speed={speed}
@@ -118,19 +115,6 @@ Carousel.Content = ({
   )
 }
 Carousel.propTypes = {
-  children: function (props, propName, componentName) {
-    const prop = props[propName]
-
-    React.Children.forEach(prop, function (child) {
-      if (child.type !== Carousel.Content) {
-        throw new Error(
-          '`' +
-            componentName +
-            '` children should be of type `Carousel.Content`.'
-        )
-      }
-    })
-  },
   config: PropTypes.shape({
     showTabs: PropTypes.bool,
     loop: PropTypes.bool,
