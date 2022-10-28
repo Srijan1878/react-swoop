@@ -1,16 +1,27 @@
 {
-  "name": "react-image-carousel",
-  "version": "1.0.0",
-  "description": "A package that makes building beautiful image carousels incredibly easy.",
-  "author": "Srijan1878",
+  "name": "react-swoop",
+  "version": "1.2.1",
+  "description": "A package that makes building beautiful carousels incredibly easy.",
+  "author":{ 
+    "name": "Srijan1878" ,
+    "email": "srijansilnit@gmail.com"
+  },
   "license": "MIT",
-  "repository": "Srijan1878/react-image-carousel",
+  "repository": "Srijan1878/react-image-whirler",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
   "engines": {
     "node": ">=10"
   },
+  "keywords": [
+    "carousel",
+    "react-carousel",
+    "react image-slider",
+    "react image-whirler",
+    "swoop",
+    "react-swoop"
+  ],
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
@@ -24,10 +35,9 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^18.0.0"
   },
   "devDependencies": {
-    "microbundle-crl": "^0.13.10",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
@@ -41,6 +51,7 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
+    "microbundle-crl": "^0.13.10",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
     "react": "^16.13.1",
@@ -49,5 +60,9 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "prop-types": "^15.8.1",
+    "styled-components": "^5.3.6"
+  }
 }
