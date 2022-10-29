@@ -2,9 +2,12 @@ import animationConfig from '../config/animationConfig'
 
 const { animationStyles } = animationConfig
 
-const getStyles = ({ index, active, animationType }) => {
+export const getSlideStyles = ({ index, active, animationType }) => {
   const direction = index - active
   return animationStyles[animationType](direction)
 }
 
-export default getStyles
+export const getContentTrackerStyles = ({ dragOffset, animationType }) => {
+  if (animationType !== 'slide') return {}
+  return { transform: `translateX(${dragOffset * -1}%)` }
+}
