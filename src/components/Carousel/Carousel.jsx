@@ -100,7 +100,7 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
   })
 
   return (
-    <CarouselWrapper>
+    <CarouselWrapper {...props}>
       <CarouselContentTracker
         showAnimation={dragOffset === 0}
         speed={speed}
