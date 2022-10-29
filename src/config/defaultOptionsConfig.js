@@ -4,7 +4,8 @@ const defaultOptionsConfig = {
   animationType: 'slide',
   speed: 0.5,
   showTabs: true,
-  interval: 2000
+  interval: 2000,
+  draggable: false
 }
 
 export default defaultOptionsConfig

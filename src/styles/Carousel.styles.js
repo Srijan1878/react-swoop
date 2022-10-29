@@ -12,11 +12,13 @@ export const CarouselContentWrapper = styled.div`
   left: 0%;
   width: 100%;
   height: 100%;
+  user-select: none;
   transition: all ${(props) => props.speed}s ease-in-out;
   * {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
   }
 `
 export const CarouselButton = styled.button`
@@ -58,4 +60,14 @@ export const CarouselTab = styled.div`
   border-radius: 50%;
   border: 1px solid white;
   background-color: ${(props) => (props.isActive ? 'white' : 'transparent')};
+`
+
+export const CarouselContentTracker = styled.div`
+  width: 100%;
+  height: 100%;
+  transition: all ${(props) => (props.showAnimation ? 0.35 : 0)}s ease-in-out;
+  cursor: grab;
+  * {
+    transition: all ${(props) => props.speed}s ease-in-out;
+  }
 `

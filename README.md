@@ -104,6 +104,11 @@ const App = () => {
     <td>Number</td>
     <td>This denotes the speed of the animation in seconds while switching sldies. If you a animation duration of 500 mili seconds, simply pass '0.5' as value.</td>
     </tr>
+    <tr>
+    <td>draggable</td>
+    <td>Boolean</td>
+    <td>Turning this on will let you drag and switch between slides.</td>
+    </tr>
     </tbody>
   </table>
   </li>

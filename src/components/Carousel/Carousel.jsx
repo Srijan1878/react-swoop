@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   CarouselWrapper,
-  CarouselContentWrapper
+  CarouselContentWrapper,
+  CarouselContentTracker
 } from '../../styles/Carousel.styles'
 import Button from '../Button/Button'
 import CarouselTabs from '../CarouselTabs/CarouselTabs'
-// import getIndex from '../../utils/getIndex'
-import getStyles from '../../utils/getStyles'
+import getIndex from '../../utils/getIndex'
+import { getContentTrackerStyles, getSlideStyles } from '../../utils/getStyles'
 import animationConfig from '../../config/animationConfig'
 import generateConfig from '../../utils/generateConfig'
+import SLIDE_SNAP_RANGE from '../../constants/SlideSnapRange'
+import {
+  checkIfFirstSlide,
+  checkIfLastSlide
+} from '../../utils/checkSlideExtremes'
 
 const { animationTypes } = animationConfig
 /**
@@ -30,14 +36,23 @@ const { animationTypes } = animationConfig
  * )
  */
 
-export const Carousel = ({ children, config = {}, ...props }) => {
+export const Carousel = ({ children = [], config = {}, ...props }) => {
+  // genertating config
   const configOptions = generateConfig(config)
-  const { loop, showTabs, auto, interval, animationType, speed } = configOptions
+
+  // config options
+  const { loop, showTabs, auto, interval, animationType, speed, draggable } =
+    configOptions
+
+  // states
   const [active, setActive] = useState(props.active || 0)
+  const [dragOffset, setDragOffset] = useState(0)
+
+  const slidesLength = children.length
 
   const changeImage = (direction = 1) => {
     return () => {
-      setActive((prev) => prev + direction)
+      setActive((prev) => getIndex(prev + direction, slidesLength))
     }
   }
 
@@ -53,44 +68,54 @@ export const Carousel = ({ children, config = {}, ...props }) => {
     return () => clearInterval(intervalId)
   }, [])
 
+  const populateDragOffset = (value) => setDragOffset(value)
+
+  const snapSlide = () => {
+    if (dragOffset > SLIDE_SNAP_RANGE.MAX) {
+      changeImage(1)()
+    } else if (dragOffset < SLIDE_SNAP_RANGE.MIN) {
+      changeImage(-1)()
+    }
+    setDragOffset(0)
+  }
+
   const childrenWithProps = React.Children.map(children, (child, index) => {
     const isContentComponent = child.type === Carousel.Content
+    const props = {
+      index,
+      animationType,
+      speed,
+      active,
+      populateDragOffset,
+      setActive,
+      snapSlide,
+      draggable
+    }
     switch (isContentComponent) {
       case true:
-        return React.cloneElement(child, {
-          index,
-          animationType,
-          speed,
-          active,
-          setActive
-        })
+        return React.cloneElement(child, props)
       case false:
-        return (
-          <Carousel.Content
-            index={index}
-            animationType={animationType}
-            speed={speed}
-            active={active}
-            setActive={setActive}
-          >
-            {child}
-          </Carousel.Content>
-        )
+        return <Carousel.Content {...props}>{child}</Carousel.Content>
     }
   })
 
   return (
     <CarouselWrapper>
-      {childrenWithProps}
+      <CarouselContentTracker
+        showAnimation={dragOffset === 0}
+        speed={speed}
+        style={getContentTrackerStyles({ dragOffset, animationType })}
+      >
+        {childrenWithProps}
+      </CarouselContentTracker>
       <Button
         next
         onClick={changeImage(1)}
-        disabled={!loop && active === children.length - 1}
+        disabled={checkIfLastSlide({ loop, active, slidesLength })}
       />
       <Button
         onClick={changeImage(-1)}
-        disabled={!loop && !active}
-        tabs={children}
+        disabled={checkIfFirstSlide({ loop, slidesLength })}
       />
       {showTabs && (
         <CarouselTabs
@@ -103,11 +128,60 @@ export const Carousel = ({ children, config = {}, ...props }) => {
   )
 }
 
-Carousel.Content = ({ index, children, active, animationType, speed }) => {
+Carousel.Content = ({
+  index,
+  children,
+  active,
+  animationType,
+  speed,
+  populateDragOffset,
+  snapSlide,
+  draggable,
+  ...props
+}) => {
+  // states
+  const [isSlideSelected, setIsSlideSelected] = useState(false)
+
+  // refs
+  const slideDetailsRef = useRef({})
+
+  const attachEventListener = (cb) => {
+    if (draggable) return cb
+  }
+
+  const startMovingSlide = (e) => {
+    if (!draggable) return false
+    const rect = e.target.getBoundingClientRect()
+    slideDetailsRef.current.start = e.clientX - rect.left
+    setIsSlideSelected(true)
+  }
+
+  const deselectSlide = () => {
+    if (!isSlideSelected) return
+    setIsSlideSelected(false)
+    snapSlide()
+  }
+
+  const moveSlide = (e) => {
+    if (!isSlideSelected) return
+    const rect = e.target.getBoundingClientRect()
+    const x = e.clientX - rect.left
+
+    const targetWidth = rect.width
+    populateDragOffset(
+      ((slideDetailsRef.current.start - x) / targetWidth) * 100
+    )
+  }
+
   return (
     <CarouselContentWrapper
+      {...props}
       speed={speed}
-      style={getStyles({ index, active, animationType })}
+      style={getSlideStyles({ index, active, animationType })}
+      onMouseDown={attachEventListener(startMovingSlide)}
+      onMouseMove={attachEventListener(moveSlide)}
+      onMouseUp={attachEventListener(deselectSlide)}
+      onMouseLeave={attachEventListener(deselectSlide)}
     >
       {children}
     </CarouselContentWrapper>
@@ -120,6 +194,7 @@ Carousel.propTypes = {
     auto: PropTypes.bool,
     interval: PropTypes.number,
     speed: PropTypes.number,
+    draggable: PropTypes.bool,
     animationType: PropTypes.oneOf([...animationTypes])
   })
 }
