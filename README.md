@@ -109,6 +109,11 @@ const App = () => {
     <td>Boolean</td>
     <td>Turning this on will let you drag and switch between slides.</td>
     </tr>
+    <tr>
+    <td>direction</td>
+    <td>String</td>
+    <td>This refers to the direction of the Slider. It supports two values <'horizontal || 'vertical'></td>
+    </tr>
     </tbody>
   </table>
   </li>
