@@ -5,7 +5,8 @@ const defaultOptionsConfig = {
   speed: 0.5,
   showTabs: true,
   interval: 2000,
-  draggable: false
+  draggable: false,
+  direction: 'horizontal'
 }
 
 export default defaultOptionsConfig

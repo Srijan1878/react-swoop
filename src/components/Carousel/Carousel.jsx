@@ -16,6 +16,7 @@ import {
   checkIfFirstSlide,
   checkIfLastSlide
 } from '../../utils/checkSlideExtremes'
+import directions, { HORIZONTAL, VERTICAL } from '../../constants/directions'
 
 const { animationTypes } = animationConfig
 /**
@@ -41,8 +42,16 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
   const configOptions = generateConfig(config)
 
   // config options
-  const { loop, showTabs, auto, interval, animationType, speed, draggable } =
-    configOptions
+  const {
+    loop,
+    showTabs,
+    auto,
+    interval,
+    animationType,
+    speed,
+    draggable,
+    direction
+  } = configOptions
 
   // states
   const [active, setActive] = useState(props.active || 0)
@@ -89,7 +98,8 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
       populateDragOffset,
       setActive,
       snapSlide,
-      draggable
+      draggable,
+      direction
     }
     switch (isContentComponent) {
       case true:
@@ -99,12 +109,18 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
     }
   })
 
+  console.log(direction)
+
   return (
     <CarouselWrapper {...props}>
       <CarouselContentTracker
         showAnimation={dragOffset === 0}
         speed={speed}
-        style={getContentTrackerStyles({ dragOffset, animationType })}
+        style={getContentTrackerStyles({
+          dragOffset,
+          animationType,
+          direction
+        })}
       >
         {childrenWithProps}
       </CarouselContentTracker>
@@ -115,7 +131,7 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
       />
       <Button
         onClick={changeImage(-1)}
-        disabled={checkIfFirstSlide({ loop, slidesLength })}
+        disabled={checkIfFirstSlide({ loop, active })}
       />
       {showTabs && (
         <CarouselTabs
@@ -137,6 +153,7 @@ Carousel.Content = ({
   populateDragOffset,
   snapSlide,
   draggable,
+  direction,
   ...props
 }) => {
   // states
@@ -152,7 +169,11 @@ Carousel.Content = ({
   const startMovingSlide = (e) => {
     if (!draggable) return false
     const rect = e.target.getBoundingClientRect()
-    slideDetailsRef.current.start = e.clientX - rect.left
+
+    if (direction === HORIZONTAL)
+      slideDetailsRef.current.start = e.clientX - rect.left
+    else slideDetailsRef.current.start = e.clientY - rect.top
+
     setIsSlideSelected(true)
   }
 
@@ -165,19 +186,34 @@ Carousel.Content = ({
   const moveSlide = (e) => {
     if (!isSlideSelected) return
     const rect = e.target.getBoundingClientRect()
-    const x = e.clientX - rect.left
+    switch (direction) {
+      case HORIZONTAL: {
+        const x = e.clientX - rect.left
 
-    const targetWidth = rect.width
-    populateDragOffset(
-      ((slideDetailsRef.current.start - x) / targetWidth) * 100
-    )
+        const targetWidth = rect.width
+        populateDragOffset(
+          ((slideDetailsRef.current.start - x) / targetWidth) * 100
+        )
+        break
+      }
+      case VERTICAL: {
+        const y = e.clientY - rect.top
+
+        const targetHeight = rect.height
+        populateDragOffset(
+          ((slideDetailsRef.current.start - y) / targetHeight) * 100
+        )
+        break
+      }
+      default:
+    }
   }
 
   return (
     <CarouselContentWrapper
       {...props}
       speed={speed}
-      style={getSlideStyles({ index, active, animationType })}
+      style={getSlideStyles({ index, active, animationType, direction })}
       onMouseDown={attachEventListener(startMovingSlide)}
       onMouseMove={attachEventListener(moveSlide)}
       onMouseUp={attachEventListener(deselectSlide)}
@@ -195,6 +231,7 @@ Carousel.propTypes = {
     interval: PropTypes.number,
     speed: PropTypes.number,
     draggable: PropTypes.bool,
+    direction: PropTypes.oneOf([...Object.values(directions)]),
     animationType: PropTypes.oneOf([...animationTypes])
   })
 }
