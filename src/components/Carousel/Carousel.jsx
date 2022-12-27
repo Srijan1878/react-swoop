@@ -17,6 +17,7 @@ import {
   checkIfLastSlide
 } from '../../utils/checkSlideExtremes'
 import directions, { HORIZONTAL, VERTICAL } from '../../constants/directions'
+import { ReactComponent as Next } from '../../assets/Next.svg'
 
 const { animationTypes } = animationConfig
 /**
@@ -109,8 +110,6 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
     }
   })
 
-  console.log(direction)
-
   return (
     <CarouselWrapper {...props}>
       <CarouselContentTracker
@@ -125,11 +124,13 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
         {childrenWithProps}
       </CarouselContentTracker>
       <Button
+        content={<Next />}
         next
         onClick={changeImage(1)}
         disabled={checkIfLastSlide({ loop, active, slidesLength })}
       />
       <Button
+        content={<Next />}
         onClick={changeImage(-1)}
         disabled={checkIfFirstSlide({ loop, active })}
       />
