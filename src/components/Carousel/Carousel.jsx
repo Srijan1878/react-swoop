@@ -38,6 +38,9 @@ const { animationTypes } = animationConfig
  * )
  */
 
+const LEFT = 'left'
+const RIGHT = 'right'
+
 export const Carousel = ({ children = [], config = {}, ...props }) => {
   // genertating config
   const configOptions = generateConfig(config)
@@ -51,7 +54,9 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
     animationType,
     speed,
     draggable,
-    direction
+    direction,
+    leftButton,
+    rightButton
   } = configOptions
 
   // states
@@ -110,6 +115,34 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
     }
   })
 
+  const ButtonWrapper = () => {
+    const getOnClick = (direction) =>
+      direction === LEFT ? changeImage(-1) : changeImage(1)
+    return (
+      <React.Fragment>
+        {leftButton ? (
+          leftButton({ onClick: getOnClick(LEFT) })
+        ) : (
+          <Button
+            content={<Next />}
+            onClick={getOnClick(LEFT)}
+            disabled={checkIfFirstSlide({ loop, active })}
+          />
+        )}
+        {rightButton ? (
+          leftButton({ onClick: getOnClick(RIGHT) })
+        ) : (
+          <Button
+            content={<Next />}
+            next
+            onClick={getOnClick(RIGHT)}
+            disabled={checkIfLastSlide({ loop, active, slidesLength })}
+          />
+        )}
+      </React.Fragment>
+    )
+  }
+
   return (
     <CarouselWrapper {...props}>
       <CarouselContentTracker
@@ -123,17 +156,7 @@ export const Carousel = ({ children = [], config = {}, ...props }) => {
       >
         {childrenWithProps}
       </CarouselContentTracker>
-      <Button
-        content={<Next />}
-        next
-        onClick={changeImage(1)}
-        disabled={checkIfLastSlide({ loop, active, slidesLength })}
-      />
-      <Button
-        content={<Next />}
-        onClick={changeImage(-1)}
-        disabled={checkIfFirstSlide({ loop, active })}
-      />
+      <ButtonWrapper />
       {showTabs && (
         <CarouselTabs
           tabs={childrenWithProps}
