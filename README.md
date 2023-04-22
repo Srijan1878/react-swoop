@@ -114,6 +114,16 @@ const App = () => {
     <td>String</td>
     <td>This refers to the direction of the Slider. It supports two values <'horizontal || 'vertical'></td>
     </tr>
+    <tr>
+    <td>leftButton</td>
+    <td>Function</td>
+    <td>This comes in handy when you want to pass your own customized button for toggling between slides. This prop refers to the button that will help you navigate to the previous slide</td>
+    </tr>
+    <tr>
+    <td>rightButton</td>
+    <td>Function</td>
+    <td>This comes in handy when you want to pass your own customized button for toggling between slides. This prop refers to the button that will help you navigate to the next slide</td>
+    </tr>
     </tbody>
   </table>
   </li>

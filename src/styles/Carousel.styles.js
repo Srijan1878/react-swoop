@@ -23,21 +23,23 @@ export const CarouselContentWrapper = styled.div`
 `
 export const CarouselButton = styled.button`
   position: absolute;
-  top: 0%;
+  top: 50%;
   left: ${(props) => !props.next && '0%'};
   right: ${(props) => props.next && '0%'};
-  height: 100%;
   padding-inline: 0.5rem;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: transparent;
   border: none;
   outline: none;
   color: white;
   font-weight: bold;
   transition: all 0.35s ease-in;
+  transform: ${(props) => !props.next && 'rotate(180deg)'};
   &:hover {
-    transition: all 0.35s ease-in;
-    background-color: rgba(0, 0, 0, 0.45);
+    filter: ${(props) =>
+      !props.next
+        ? 'drop-shadow(-2px -6px 2px black)'
+        : 'drop-shadow(2px 6px 2px black)'};
   }
   &:disabled {
     cursor: not-allowed;
